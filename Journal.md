@@ -68,13 +68,14 @@ date created_at
 
 We don't really need an id, since slugs have to be guaranteed to be unique. We will want a primary key constraint on slug. It should both validate uniqueness and be indexed for speedy lookups.
 
-# Views
+# Actions
 GET shrt.com/slugs/
   - will show slugs and destination urls
 GET shrt.com/slugs/new
   - input text box to paste in link
   - button to click submit
   - return flash or text on page with short link
+GET shrt.com/r/<slug>
 POST shrt.com/slugs(:slug, :destination)
 {
   "slug":"0000",
@@ -102,6 +103,9 @@ k >= 3.33 therefore k = 4 (can't have .33 chars)
 
 With k == 4 we can have nearly 15 million characters with only 4 characters.
 
+# Concurrent Requests
+With a single server and database instance this is simple. The concurrent requests will always be queued by Rails. Postgres has a way of keeping track and knowing what the last primary key was. We will simply use the base id and change it's base to 62 to generate the slug. Whenever that parameter is given we navigate to that page.
+
 # Generating our Short URL
 We could randomly roll a slug and check against the db but as the db fills up we will have more and more collisions and the number of rolls will grow drastically.
 
@@ -117,13 +121,25 @@ aB01
 aB02
 ...
 ZZZZ
-
 *Stopped 5/4 545 PM*
+
 *Started at 10 AM Saturday*
 base-62 = '0123456789abcdefghijklmnopqrstubwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 For example if we are mapping 125 base-10 to base-62 then we need to find the where a*62^0 + b*62^1 + c*62^2 is 125.
 
-The largest number that can fit inside of 125 is 62. 125/62 is 2 remainder 1 so we have 21 as our base-64 number.
+The largest number that can fit inside of 125 is 62. 125/62 is 2 remainder 1 so we have 21 as our base-62 number.
 
-For 8453 we have 8453/3844 which is 2 remainder 765. 765 / 62 = 12 (b) remainder is 21. 21 in our base 62 would be the 11th char in the alphabet which would be k. So, our our conversion is: '2bk'
+For 8453 we have 8453/3844 which is 2 remainder 765. 765 / 62 = 12 (c) remainder is 21. 21 in our base 62 would be the 10th char in the alphabet which would be l. So, our our conversion is: '2bk'
+
+[slicing html pages...]
+*Stopped @ 11 AM 5/6*
+
+*Started @ 5PM 5/6*
+[adding creation of a new link with core models and driving out with TDD]
+
+Still need to add url validation in the controller and add tests for the controller. And of course we need to add the redirect feature and the view shortlinks feature.
+*Stopped @ 8 PM 5/6*
+
+*Start @ 730 PM 5/7*
+Need to look up how to get the root application url from the controller
