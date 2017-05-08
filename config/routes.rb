@@ -3,5 +3,6 @@ Rails.application.routes.draw do
   get "html_slices/new_shortlink", to: "html_slices#new_shortlinks"
   get "html_slices/shortlinks", to: "html_slices#shortlinks"
 
-  resources :shortlinks, only: [:new, :create]
+  root to: "shortlinks#new"
+  resources :shortlinks, only: [:new, :create, :index]
 end
