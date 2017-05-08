@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-sm-offset-2 col-sm-8 ">
+    <div class="panel panel-default">
+      <div class="panel-heading">View URLs</div>
+    </div>
+    <table class="table">
+      <thead>
+        <th>TinyURL</th>
+        <th>Destination</th>
+      </thead>
+      <tbody>
+        <% if @shortlinks.count > 0 %>
+          <% @shortlinks.each do |sl| %>
+            <tr>
+              <td><a href="#"><%= @decorator.prepend_base_url(sl) %></a></td>
+              <td><a href="#"><%= sl.destination %></a></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

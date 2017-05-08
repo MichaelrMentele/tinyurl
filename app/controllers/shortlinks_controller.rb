@@ -1,4 +1,14 @@
 class ShortlinksController < ApplicationController
+  helper ApplicationHelper
+
+  def index
+    @shortlinks = Shortlink.all
+    @decorator = ShortlinkDecorator.new(request.base_url)
+    if @shortlinks.count == 0
+      flash[:info] = "There are currently no shortlinks to display."
+    end
+  end
+
   def new
     @shortlink = Shortlink.new
   end
@@ -6,8 +16,8 @@ class ShortlinksController < ApplicationController
   def create
     created_shortlink = Shortlink.new(shortlink_params)
     if created_shortlink.save
-      link = request.base_url + "/r/#{created_shortlink.slug}"
-      flash[:success] = "Shortlink created: #{link}"
+      link = ShortlinkDecorator.new(request.base_url)
+      flash[:success] = "Shortlink created: #{link.prepend_base_url(created_shortlink)}"
     else
       flash[:error] = "Is that a valid URL?"
     end

@@ -141,5 +141,14 @@ For 8453 we have 8453/3844 which is 2 remainder 765. 765 / 62 = 12 (c) remainder
 Still need to add url validation in the controller and add tests for the controller. And of course we need to add the redirect feature and the view shortlinks feature.
 *Stopped @ 8 PM 5/6*
 
-*Start @ 730 PM 5/7*
-Need to look up how to get the root application url from the controller
+*Start @ 930 PM 5/7*
+Need to look up how to get the root application url from the controller. Look it up from the request object. Kind of bizarre.
+
+Added validation and tests. Next I'm adding the view shortlinks feature.
+
+Added basic view, drivngg out with feature spec. Don't forget the need for testing the nav.
+*Stop @ 1020 PM 5/7*
+
+*Start @
+- finish TDD of view shortlinks feature
+- redirect feature

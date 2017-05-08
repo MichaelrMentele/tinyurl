@@ -4,6 +4,9 @@
 <% elsif flash[:success] %>
   <% message = flash[:success] %>
   <% alert_type = "success" %>
+<% elsif flash[:info] %>
+  <% message = flash[:info] %>
+  <% alert_type = "info" %>
 <% end %>
 
 <div class="row">
