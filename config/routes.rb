@@ -4,5 +4,7 @@ Rails.application.routes.draw do
   get "html_slices/shortlinks", to: "html_slices#shortlinks"
 
   root to: "shortlinks#new"
+
+  get "/r/:slug", to: "shortlinks#redirect"
   resources :shortlinks, only: [:new, :create, :index]
 end

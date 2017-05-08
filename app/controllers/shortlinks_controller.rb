@@ -25,9 +25,23 @@ class ShortlinksController < ApplicationController
     redirect_to new_shortlink_path
   end
 
+  def redirect
+    link = Shortlink.find_by(slug: redirect_slug)
+    if link
+      redirect_to link.destination
+    else
+      not_found
+    end
+  end
+
   private
 
   def shortlink_params
     params.require(:shortlink).permit(:destination)
+  end
+
+  def redirect_slug
+    params.permit(:slug)
+    params["slug"]
   end
 end

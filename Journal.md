@@ -149,6 +149,7 @@ Added validation and tests. Next I'm adding the view shortlinks feature.
 Added basic view, drivngg out with feature spec. Don't forget the need for testing the nav.
 *Stop @ 1020 PM 5/7*
 
-*Start @
-- finish TDD of view shortlinks feature
-- redirect feature
+*Start @ 830 AM 5/7*
+[x] finish TDD of view shortlinks feature
+[ ] redirect feature
+[ ] index slug column

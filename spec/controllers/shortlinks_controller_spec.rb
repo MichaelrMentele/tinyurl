@@ -8,6 +8,22 @@ describe ShortlinksController do
     end
   end
 
+  describe "GET r/:slug" do
+    context "valid shortlink" do
+      it "should redirect to the shortlinks destination url" do
+        tester = Shortlink.create(destination: "http://example.com")
+        get :redirect, params: { slug: tester.slug }
+        expect(response).to redirect_to("http://example.com")
+      end
+    end
+
+    context "non-existent shortlink" do
+      it "should redirect to an error page" do
+        expect{  get :redirect, params: { slug: "invalid" } }.to raise_error(ActionController::RoutingError)
+      end
+    end
+  end
+
   describe "POST create" do
     context "with valid destination URL" do
       before do
@@ -45,4 +61,6 @@ describe ShortlinksController do
       end
     end
   end
+
+
 end
