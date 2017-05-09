@@ -14,18 +14,6 @@ describe Shortlink do
     expect(Shortlink.count).to eq(0)
   end
 
-  describe "self.to_base_62" do
-    # base 62 in this case is 0-9a-Z
-    it "correctly converts to base 62" do
-      Shortlink.create(destination: "http://www.example.com")
-      tmp = Shortlink
-      expect(tmp.to_base_62(1)).to eq("1")
-      expect(tmp.to_base_62(62)).to eq("10")
-      expect(tmp.to_base_62(125)).to eq("21")
-      expect(tmp.to_base_62(8453)).to eq("2cl")
-    end
-  end
-
   describe "#after_save" do
     it "automatically creates a base 62 slug" do
       Shortlink.create(destination: "http://www.example.com")
