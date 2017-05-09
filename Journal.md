@@ -142,7 +142,7 @@ Step 1: Planning and Design
     - no auth
     - no tracking metrics
     - no link modifications
-    - no expiring links 
+    - no expiring links
     - naieve: no pagination of shortlinks view
     - auto-generated slugs ie. no user generated slugs
   - design constraints
@@ -242,11 +242,10 @@ Added basic view, drivngg out with feature spec. Don't forget the need for testi
 *Stop @ 10 AM 5/8
 
 *Start @ 1145 AM 5/8*
-Expanded presentation sketch.
-[ ] reset db during test run
-[ ] index slug column
-[ ] host live on Heroku
-[ ] outline presentation
+[x] outline presentation
 *Stop @1315 PM 5/8*
 
 *Start @ 940 PM 5/8*
+[x] reset db during test run
+[x] index slug column
+[ ] host live on Heroku
