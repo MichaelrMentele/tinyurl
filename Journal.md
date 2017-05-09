@@ -178,12 +178,6 @@ Tweaked behavior of redirect. Revised presentation.
 
 *Start @ 1015 AM*
 - less predictable ids (shortlinks paths)
-  - base_10 -> 62 -> hashing
-  - /r/:slug
-  - domain/r/:slug
-  - domain/shortlinks
-  - app.domain/shortlinks
-  - domain/:hashedslug
 - User entered slugs
   - suggesting, similar paths
   - we can no longer just convert the id to base_62
@@ -193,15 +187,14 @@ Tweaked behavior of redirect. Revised presentation.
   -
   - id 0,1,2,3,4
   - |x|x|x|x| | | | |x|x|x|x|
-            ^          ^ ^ ^
+            ^       
   - |x| |x| | | | | |x|x|x| |
+     ^
 
   links
   -----
   path <- adslkfj
   path <- abc
-
-  random roll 1 - ZZZZ
 
 - Add analytics
   - number of links visited, increment everytime a url is visited
@@ -224,3 +217,18 @@ dest: nil
 run a query where all destinations are nil.
 
 Script to populate the database namespace. In this case 15 million rows.
+
+Instead of check if something is nil, I can check whether the namespace exists. If it doesn't then insert. Else error.
+
+For autogeneration, if there is a gap between.
+
+1 2 3 4 7 8 9
+
+One of the problems with this is that I need to store a pointer to the end of the known set of ids.
+
+Everytime I access the known ID I need to lock it.
+
+1, 2, 3, 4, 5, 6, Z, abc, ZZZ,
+            ^
+
+Continually increment last_seen_id until there is no value, then you can return that value.
