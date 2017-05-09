@@ -248,4 +248,5 @@ Added basic view, drivngg out with feature spec. Don't forget the need for testi
 *Start @ 940 PM 5/8*
 [x] reset db during test run
 [x] index slug column
-[ ] host live on Heroku
+[x] host live on Heroku
+hosted at:

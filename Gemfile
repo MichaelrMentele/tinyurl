@@ -18,6 +18,7 @@ gem 'puma', '~> 3.7'
 gem 'bootstrap-sass'
 gem 'bootstrap_form'
 gem 'sass-rails', '~> 5.0'
+gem 'uglifier'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'

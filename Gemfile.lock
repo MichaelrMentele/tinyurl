@@ -181,6 +181,8 @@ GEM
     turbolinks-source (5.0.3)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
+    uglifier (3.2.0)
+      execjs (>= 0.3.0, < 3)
     validate_url (1.0.2)
       activemodel (>= 3.0.0)
       addressable
@@ -218,6 +220,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   turbolinks (~> 5)
+  uglifier
   validate_url
   web-console (>= 3.3.0)
 
