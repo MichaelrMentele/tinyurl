@@ -30,5 +30,11 @@ describe Shortlink do
 
       expect(Shortlink.last.slug).to eq("2")
     end
+
+    it "correctly increments" do
+      10.times { Shortlink.create(destination: "http://www.example.com") }
+
+      expect(Shortlink.last.slug).to eq("a")
+    end
   end
 end

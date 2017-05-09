@@ -10,8 +10,8 @@ end
 gem 'rails', '~> 5.1.0'
 # Validate URLs
 gem 'validate_url'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# Use postgresql as DB for active record
+gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
@@ -29,6 +29,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'pry'
   gem 'pry-nav'
+  gem 'database_cleaner'
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13.0'
   gem 'selenium-webdriver'
