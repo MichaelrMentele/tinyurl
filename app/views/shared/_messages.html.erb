@@ -1,16 +1,8 @@
-<% if flash[:error] %>
-  <% message = flash[:error] %>
-  <% alert_type = "danger" %>
-<% elsif flash[:success] %>
-  <% message = flash[:success] %>
-  <% alert_type = "success" %>
-<% elsif flash[:info] %>
-  <% message = flash[:info] %>
-  <% alert_type = "info" %>
-<% end %>
-
-<div class="row">
-  <div class="col-sm-offset-4 col-sm-4 alert alert-<%=alert_type%>" role="alert">
-    <%= message %>
+<% flash.each do |type, message| %>
+  <% if type == 'error' then type = 'danger' end %>
+  <div class="row">
+    <div class="col-sm-offset-4 col-sm-4 alert alert-<%=type%>" role="alert">
+      <%= message %>
+    </div>
   </div>
-</div>
+<% end %>

@@ -30,7 +30,8 @@ class ShortlinksController < ApplicationController
     if link
       redirect_to link.destination
     else
-      not_found
+      flash[:error] = "Which shortlink did you mean to go to?"
+      redirect_to shortlinks_path
     end
   end
 

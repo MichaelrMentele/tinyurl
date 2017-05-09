@@ -18,8 +18,14 @@ describe ShortlinksController do
     end
 
     context "non-existent shortlink" do
-      it "should redirect to an error page" do
-        expect{  get :redirect, params: { slug: "invalid" } }.to raise_error(ActionController::RoutingError)
+      it "should redirect to the index page" do
+        get :redirect, params: { slug: "invalid" }
+        expect(response).to redirect_to shortlinks_path
+      end
+
+      it "sets a flash error message" do
+        get :redirect, params: { slug: "invalid" }
+        expect(flash[:error]).to be_present
       end
     end
   end
