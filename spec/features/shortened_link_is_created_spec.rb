@@ -7,7 +7,7 @@ feature "shortened link is created" do
       click_on "Home"
       fill_in "Destination", with: 'http://www.testing.com'
       click_button 'Shorten!'
-      expect(page).to have_content 'http://www.example.com/r/1'
+      expect(page).to have_content 'http://www.example.com'
     end
   end
 

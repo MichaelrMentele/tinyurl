@@ -175,3 +175,52 @@ thawing-fjord-13747.herokuapp.com
 
 *Start @ 8 AM 5/9*
 Tweaked behavior of redirect. Revised presentation.
+
+*Start @ 1015 AM*
+- less predictable ids (shortlinks paths)
+  - base_10 -> 62 -> hashing
+  - /r/:slug
+  - domain/r/:slug
+  - domain/shortlinks
+  - app.domain/shortlinks
+  - domain/:hashedslug
+- User entered slugs
+  - suggesting, similar paths
+  - we can no longer just convert the id to base_62
+  - I think we can eagerly insert, if it bounces back, then try the next one and
+    so forth.
+  - path:            
+  -
+  - id 0,1,2,3,4
+  - |x|x|x|x| | | | |x|x|x|x|
+            ^          ^ ^ ^
+  - |x| |x| | | | | |x|x|x| |
+
+  links
+  -----
+  path <- adslkfj
+  path <- abc
+
+  random roll 1 - ZZZZ
+
+- Add analytics
+  - number of links visited, increment everytime a url is visited
+  - where they came from, user agent, request header information?
+  - feature: page with most
+    - most frequently visited domains (top 10)
+
+Analytics is orthogonal to the ids. How can I use less predictable ids.
+
+The problem is, I have a namespace that I want to be able to quickly generate a value for. I should allow a user to insert a value into that namespace.
+
+0 1 2 3 4 5
+
+For auto generated, I can create a row for every name space.
+| a | b | c | d | e | f | g |
+
+slug: a
+dest: nil
+
+run a query where all destinations are nil.
+
+Script to populate the database namespace. In this case 15 million rows.

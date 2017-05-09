@@ -14,7 +14,7 @@ describe Shortlink do
     expect(Shortlink.count).to eq(0)
   end
 
-  describe "#to_base_62" do
+  describe "self.to_base_62" do
     # base 62 in this case is 0-9a-Z
     it "correctly converts to base 62" do
       Shortlink.create(destination: "http://www.example.com")

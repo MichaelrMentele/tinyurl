@@ -15,7 +15,9 @@ class Shortlink < ActiveRecord::Base
     base_62_str = ''
     prev_remainder = to_convert
     (max_pwr).downto(0) do |power|
-      #
+      # see how many times the current base ^ power divides into the remaining
+      # value. index into the char set at that number of divisions. This is
+      # a number in the range 0..Z * 62^power.
       r = prev_remainder.divmod(BASE_62_CHARS.length ** power)
       base_62_str << BASE_62_CHARS[r[0]]
       prev_remainder = r[1]

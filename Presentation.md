@@ -98,6 +98,40 @@ Shortlink Table         Shortlink Model                ShortlinksController
 - timestamps
 
 ## Step 5: Future
+- less predictable ids (shortlinks paths)
+  - base_10 -> 62 -> hashing
+  - /r/:slug
+  - domain/r/:slug
+  - domain/shortlinks
+  - app.domain/shortlinks
+  - domain/:hashedslug
+- User entered slugs
+  - suggesting, similar paths
+  - we can no longer just convert the id to base_62
+  - I think we can eagerly insert, if it bounces back, then try the next one and
+    so forth.
+  - path:            
+  -
+  - id 0,1,2,3,4
+  - |x|x|x|x| | | | |x|x|x|x|
+            ^          ^ ^ ^
+  - |x| |x| | | | | |x|x|x| |
+      
+
+  links
+  -----
+  path <- adslkfj
+  path <- abc
+
+  random roll 1 - ZZZZ
+
+
+
+- Add analytics
+  - number of links visited, increment everytime a url is visited
+  - where they came from, user agent, request header information?
+  - feature: page with most
+    - most frequently visited domains (top 10)
 - detecting abuse
   - malicious bots and greedy users
   - look for:
@@ -113,13 +147,6 @@ Shortlink Table         Shortlink Model                ShortlinksController
   - 9/10 query are reads
   - more replicant DBs for read as needed
   - sharding and reserving a range of slugs per machine?
-- Add analytics
-  - number of links visited, increment everytime a url is visited
-  - where they came from, user agent, request header information?
-- User entered slugs
-  - we can no longer just convert the id to base_62
-  - I think we can eagerly insert, if it bounces back, then try the next one and
-    so forth.
 - Expiring shortlinks
   - query on creation if any previous slugs have a nil destination, if yes, then update its destination and return
     its slug.
