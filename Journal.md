@@ -250,3 +250,4 @@ Added basic view, drivngg out with feature spec. Don't forget the need for testi
 [x] index slug column
 [x] host live on Heroku
 hosted at:
+thawing-fjord-13747.herokuapp.com
