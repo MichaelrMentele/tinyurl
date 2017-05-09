@@ -135,86 +135,6 @@ For 8453 we have 8453/3844 which is 2 remainder 765. 765 / 62 = 12 (c) remainder
 
 It’s very important that you include a journal where you explain how much time did you spend planning and coding to solve the problem. Be prepared to present that information to the team.
 
----
-Step 1: Planning and Design
-  - scope
-    - 1 million unique shortlinks
-    - no auth
-    - no tracking metrics
-    - no link modifications
-    - no expiring links
-    - naieve: no pagination of shortlinks view
-    - auto-generated slugs ie. no user generated slugs
-  - design constraints
-    - space req.
-      - 200 bytes * 1 million = 200 mb
-    - QPS and scaling path
-      - 100 QPS  -> single server
-      - 2000 QPS -> 2-3 servers with load balancer
-      - Considerations:
-        - same data center
-        - index slug column
-        - Multiple application servers
-        - Read heavy: DB Master/Slave replication
-        - concurrent requests / slug collisions
-  - data model and actions
-    - see actions
-  - core algorithm
-    - random vs. sequential auto generated
-    - guaranteed unique (DB id)
-    - solve charSet^(lengthOfString) > 1 million
-    - ease of typing & capitals are unique (RFC)
-    - base_62 length of 4 is over 15 million
-  - interface
-    - navigation
-    - redirection under /r/:slug, could have also used subdomains and removed
-      the extra /r. I didn't for simplicity. Instead of .com could have used 2
-      characters. http://tiny.in/:slug vs. http://tinyurl.com/r/:slug
-    - flash messages
-Step 2: Tool Selection
-  - Ruby on Rails (productivity)
-  - fulfills design requirements
-Step 3: View Slicing
-  - html_slices controller
-  - create new tinyurl
-  - view tinyurl pairs
-  - tools: erb
-Step 4: TDD by Feature
-  - feature -> controller -> model
-  - tools: capybara and rspec
-
-PG                ->    ORM (ActiveRecord)       ->    Controller
-Shortlink Table         Shortlink Model                ShortlinksController
-- id PK (indexed)       - validates url                - decorator
-- slug (indexed)        - callback: id to base_62      - #redirect
-- destination                                          - #new, #index, #create
-- timestamps
-
-Step 5: Future
-  - Handle 1 trillion unique integers, can PG still handle this? Will need to consider
-    space in this situation.
-    - 200 gb for 1 billion
-    - 200 tb for 1 trillion
-  - Handle 2000 QPS? 5000 QPS peak?
-  - Add analytics
-    - number of links visited, increment everytime a url is visited
-    - where they came from, user agent, request header information
-  - Reserving a range of slugs
-  - User entered slugs
-    - we can no longer just convert the base, can we insert the record with an id?
-      I think we can eagerly insert, if it bounces back, then try the next one and
-      so forth.
-  - Expiring shortlinks
-    - System needs to know that it is now available, can add a query on creation
-      if any slugs have a nil destination, then we can just update that and return
-      its slug. Will want to index destination
-  - detecting abuse
-    - malicious bots and greedy users
-    - look for:
-      - repeat links
-      - repeat requests from same IP
-      - throttling of links from a given IP
-
 *Stopped 5/4 545 PM*
 
 *Started at 10 AM Saturday*
@@ -251,3 +171,7 @@ Added basic view, drivngg out with feature spec. Don't forget the need for testi
 [x] host live on Heroku
 hosted at:
 thawing-fjord-13747.herokuapp.com
+*Stop @ 1020 PM 5/8*
+
+*Start @ 8 AM 5/9*
+Tweaked behavior of redirect. Revised presentation.

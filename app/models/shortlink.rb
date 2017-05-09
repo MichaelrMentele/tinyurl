@@ -8,6 +8,7 @@ class Shortlink < ActiveRecord::Base
   after_save :add_slug!
 
   validates :destination, :url => true
+  validates :slug, uniqueness: true 
 
   def to_base_62(to_convert)
     digits_needed = Math.log(to_convert, BASE_62_CHARS.length).floor + 1

@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 describe Shortlink do
+  it "validates uniqueness of slug" do
+    Shortlink.create!(destination: "http://randomstring.com")
+    Shortlink.create!(destination: "http://randomstring.com")
+
+    first = Shortlink.first
+    expect { first.update!(slug: Shortlink.second.slug) }.to raise_error
+  end
+
   it "validates that destination is a URL" do
     Shortlink.create(destination: "randomstring")
     expect(Shortlink.count).to eq(0)
