@@ -7,6 +7,7 @@ feature "shortened link is created" do
       click_on "Home"
       fill_in "Destination", with: 'http://www.testing.com'
       click_button 'Shorten!'
+      # Note: this is the root domain for test env.
       expect(page).to have_content 'http://www.example.com'
     end
   end

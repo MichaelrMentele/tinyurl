@@ -3,6 +3,7 @@
       <div class="col-sm-offset-4 col-sm-4">
           <%= bootstrap_form_for(@shortlink) do |f| %>
             <%= f.text_field :destination %>
+            <%= f.text_field :slug %>
             <%= f.submit "Shorten!" %>
           <% end %>
       </div>

@@ -14,8 +14,11 @@ class ShortlinksController < ApplicationController
   end
 
   def create
+    # TODO: prettify?
     created_shortlink = Shortlink.new(shortlink_params)
-    if created_shortlink.save
+    if Shortlink.find_by(slug: shortlink_params[:slug])
+      flash[:error] = "I'm sorry, that link is taken."
+    elsif created_shortlink.save
       link = ShortlinkDecorator.new(request.base_url)
       flash[:success] = "Shortlink created: #{link.prepend_base_url(created_shortlink)}"
     else
@@ -38,7 +41,11 @@ class ShortlinksController < ApplicationController
   private
 
   def shortlink_params
-    params.require(:shortlink).permit(:destination)
+    if params[:slug]
+      base_62 = params[:slug]
+      params[:id] = Base62.to_base_10_from_62(base_62)
+    end
+    params.require(:shortlink).permit(:destination, :slug)
   end
 
   def redirect_slug
