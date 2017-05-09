@@ -53,17 +53,25 @@ date created_at
 
 We don't really need an id, since slugs have to be guaranteed to be unique. We will want a primary key constraint on slug. It should both validate uniqueness and be indexed for speedy lookups.
 
-### Core Algorithm
-- random vs. sequential auto generated
-- guaranteed unique (DB id)
-- solve charSet^(lengthOfString) > 1 million
-- ease of typing & capitals are unique (RFC)
-- base_62 length of 4 is over 15 million
-
 ### Actions
 - redirection under /r/:slug, could have also used subdomains and removed
   the extra /r. I didn't for simplicity. Instead of .com could have used 2
-  characters. http://tiny.in/:slug vs. http://tinyurl.com/r/:slug
+  characters. http://tny.co/:slug vs. http://tinyurl.com/r/:slug
+
+### Core Algorithm
+- random vs. sequential auto generated
+- guaranteed unique (DB id)
+- solve c^(k) > 1 million where c is num chars in set and k is length of string
+    Solving for k...
+    62^k > 1,000,000
+    k*log(62) > log(1,000,000)
+    k*1.8 > 6
+    k >= 6/1.8
+    k >= 3.33 therefore k = 4 (can't have .33 chars)
+- selection of char set:
+  - ease of typing
+  - capitals are unique in URLs (RFC: https://tools.ietf.org/html/rfc3986)
+- base_62 length of 4 is over 15 million
 
 ## Step 3: Tool Selection
   - Ruby on Rails
