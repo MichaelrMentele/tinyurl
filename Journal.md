@@ -23,15 +23,14 @@ During your presentation, please be prepared to...
 - discuss your choices (e.g., language, tools, framework, design, etc.) and trade-offs
 - discuss how it should be able to handle concurrent requests
 
-It’s very important that you include a journal where you explain how much time did you spend planning and coding to solve the problem. Be prepared to present that information to the team.
-
 ## Future
 - we will present new or changed requirements
 - you will lead a discussion of how to meet them
 - you will have some time to make the changes
 - you will demonstrate and present your revised project.
 
-# Scope
+# Solution Design
+## Scope
 What are we building?
 - A web application with a UI for entering a URL and displaying a shortened link.
 - A view for inspecting the mapping of short urls to long urls.
@@ -50,7 +49,7 @@ Do people shorten their own links or are they auto-generated? This seems like so
 
 Do we want extras like analytics? ie. how many tiems the link is accessed. This isn't a core feature but would add a lot of value in the future. Let's add it to the backlog.
 
-# Design Goals and Bottlenecks
+## Design Goals and Bottlenecks
 What are we optimizing for? If we are going to store links forever it won't be space. Instead let's make the redirect for the user as fast as possible and as easy to remember (short) as possible.
 
 How can we make lookups fast? We will want want to index the short links in our database for optimal lookup. Although, with only a million rows (assuming relational DB) the bottleneck might not even be a linear scan but time on the wire for queries from our application to our DB. We will also want to make sure to put our DB in the same data center as our servers if possible. If in the future we allow users to create their own links, this will make the check against the database fast as well.
@@ -59,7 +58,7 @@ How much space do we need? If each pair of URLs is around 200 bytes and we have 
 
 We also want to consider QPS requirements. If someone post a link in the New York Times it might get a lot of hits. For ballpark QPS let's consider that 1 hundred thousand people might see a link in the media at any given minute in time and at most 10% of them will visit the link. 100,000 * 0.1 / 60 = 166 QPS. This can be handled by a single server easily. If we need to scale up and handle an order of magnitude more requests then we might add a few more boxes with a load balancer in front. For most production systems this is pushed down to an infrastructure as a service platform (AWS, Google AppEngine etc.)
 
-# Data Model
+## Data Model
 TinyURLs table
 --------
 str slug
@@ -68,7 +67,7 @@ date created_at
 
 We don't really need an id, since slugs have to be guaranteed to be unique. We will want a primary key constraint on slug. It should both validate uniqueness and be indexed for speedy lookups.
 
-# Actions
+## Actions
 GET shrt.com/slugs/
   - will show slugs and destination urls
 GET shrt.com/slugs/new
@@ -82,7 +81,7 @@ POST shrt.com/slugs(:slug, :destination)
   "destination":"example.com"
 }
 
-# Core Feature Algo - URL Generation
+## Core Feature Algo - URL Generation
 The feature is relatively simple. We are essentially creating a giant look up table that does a few things:
 1) Generates a unique string that is as short as possible on request
 2) Associates that string with a redirect url
@@ -103,10 +102,14 @@ k >= 3.33 therefore k = 4 (can't have .33 chars)
 
 With k == 4 we can have nearly 15 million characters with only 4 characters.
 
-# Concurrent Requests
+## Concurrent Requests
 With a single server and database instance this is simple. The concurrent requests will always be queued by Rails. Postgres has a way of keeping track and knowing what the last primary key was. We will simply use the base id and change it's base to 62 to generate the slug. Whenever that parameter is given we navigate to that page.
 
-# Generating our Short URL
+There are two choices when we begin to scale horizontally, either each application can be assigned a subset of the keys ie. for servers 1-10 they would each recieve base 62 slugs from 1..100,000 in 100k increments. Or we can have one central issuer of unique base 62 ids.
+
+Since the DB doesn't know about base 62 conversion and this is a custom conversion, we can simply use their unique primary keys, but convert them to base 62 for brevity as part of a record being saved. In this case we use a callback in Rails after save to make the conversion of the id to base 62 and store it as slug on the record.
+
+## Generating our Short URL
 We could randomly roll a slug and check against the db but as the db fills up we will have more and more collisions and the number of rolls will grow drastically.
 
 We'd rather always be sure we are getting a unique slug. I'm assuming that we do not need to account for use specified slugs (random slots being taken up) and don't need to handle collisions we can increment whatever our last base-62 slug was.
@@ -121,9 +124,7 @@ aB01
 aB02
 ...
 ZZZZ
-*Stopped 5/4 545 PM*
 
-*Started at 10 AM Saturday*
 base-62 = '0123456789abcdefghijklmnopqrstubwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 For example if we are mapping 125 base-10 to base-62 then we need to find the where a*62^0 + b*62^1 + c*62^2 is 125.
@@ -132,6 +133,91 @@ The largest number that can fit inside of 125 is 62. 125/62 is 2 remainder 1 so 
 
 For 8453 we have 8453/3844 which is 2 remainder 765. 765 / 62 = 12 (c) remainder is 21. 21 in our base 62 would be the 10th char in the alphabet which would be l. So, our our conversion is: '2bk'
 
+It’s very important that you include a journal where you explain how much time did you spend planning and coding to solve the problem. Be prepared to present that information to the team.
+
+---
+Step 1: Planning and Design
+  - scope
+    - 1 million unique shortlinks
+    - no auth
+    - no tracking metrics
+    - no link modifications
+    - no expiring links 
+    - naieve: no pagination of shortlinks view
+    - auto-generated slugs ie. no user generated slugs
+  - design constraints
+    - space req.
+      - 200 bytes * 1 million = 200 mb
+    - QPS and scaling path
+      - 100 QPS  -> single server
+      - 2000 QPS -> 2-3 servers with load balancer
+      - Considerations:
+        - same data center
+        - index slug column
+        - Multiple application servers
+        - Read heavy: DB Master/Slave replication
+        - concurrent requests / slug collisions
+  - data model and actions
+    - see actions
+  - core algorithm
+    - random vs. sequential auto generated
+    - guaranteed unique (DB id)
+    - solve charSet^(lengthOfString) > 1 million
+    - ease of typing & capitals are unique (RFC)
+    - base_62 length of 4 is over 15 million
+  - interface
+    - navigation
+    - redirection under /r/:slug, could have also used subdomains and removed
+      the extra /r. I didn't for simplicity. Instead of .com could have used 2
+      characters. http://tiny.in/:slug vs. http://tinyurl.com/r/:slug
+    - flash messages
+Step 2: Tool Selection
+  - Ruby on Rails (productivity)
+  - fulfills design requirements
+Step 3: View Slicing
+  - html_slices controller
+  - create new tinyurl
+  - view tinyurl pairs
+  - tools: erb
+Step 4: TDD by Feature
+  - feature -> controller -> model
+  - tools: capybara and rspec
+
+PG                ->    ORM (ActiveRecord)       ->    Controller
+Shortlink Table         Shortlink Model                ShortlinksController
+- id PK (indexed)       - validates url                - decorator
+- slug (indexed)        - callback: id to base_62      - #redirect
+- destination                                          - #new, #index, #create
+- timestamps
+
+Step 5: Future
+  - Handle 1 trillion unique integers, can PG still handle this? Will need to consider
+    space in this situation.
+    - 200 gb for 1 billion
+    - 200 tb for 1 trillion
+  - Handle 2000 QPS? 5000 QPS peak?
+  - Add analytics
+    - number of links visited, increment everytime a url is visited
+    - where they came from, user agent, request header information
+  - Reserving a range of slugs
+  - User entered slugs
+    - we can no longer just convert the base, can we insert the record with an id?
+      I think we can eagerly insert, if it bounces back, then try the next one and
+      so forth.
+  - Expiring shortlinks
+    - System needs to know that it is now available, can add a query on creation
+      if any slugs have a nil destination, then we can just update that and return
+      its slug. Will want to index destination
+  - detecting abuse
+    - malicious bots and greedy users
+    - look for:
+      - repeat links
+      - repeat requests from same IP
+      - throttling of links from a given IP
+
+*Stopped 5/4 545 PM*
+
+*Started at 10 AM Saturday*
 [slicing html pages...]
 *Stopped @ 11 AM 5/6*
 
@@ -149,7 +235,18 @@ Added validation and tests. Next I'm adding the view shortlinks feature.
 Added basic view, drivngg out with feature spec. Don't forget the need for testing the nav.
 *Stop @ 1020 PM 5/7*
 
-*Start @ 830 AM 5/7*
+*Start @ 830 AM 5/8*
 [x] finish TDD of view shortlinks feature
-[ ] redirect feature
+[x] redirect feature
+[x] convert to pg
+*Stop @ 10 AM 5/8
+
+*Start @ 1145 AM 5/8*
+Expanded presentation sketch.
+[ ] reset db during test run
 [ ] index slug column
+[ ] host live on Heroku
+[ ] outline presentation
+*Stop @1315 PM 5/8*
+
+*Start @ 940 PM 5/8*
