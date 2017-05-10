@@ -232,3 +232,6 @@ Everytime I access the known ID I need to lock it.
             ^
 
 Continually increment last_seen_id until there is no value, then you can return that value.
+
+Next steps:
+Need to store a pointer to the known space.

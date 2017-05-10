@@ -15,6 +15,6 @@ class Shortlink < ActiveRecord::Base
   private
 
   def add_slug!
-    update_attribute(:slug, Base62.to_base_62(id)) unless slug
+    update_attribute(:slug, Base62.to_base_62(id)) unless slug.present?
   end
 end

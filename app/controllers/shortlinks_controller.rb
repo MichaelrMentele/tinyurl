@@ -14,7 +14,6 @@ class ShortlinksController < ApplicationController
   end
 
   def create
-    # TODO: prettify?
     created_shortlink = Shortlink.new(shortlink_params)
     if Shortlink.find_by(slug: shortlink_params[:slug])
       flash[:error] = "I'm sorry, that link is taken."
@@ -41,11 +40,11 @@ class ShortlinksController < ApplicationController
   private
 
   def shortlink_params
-    if params[:slug]
+    if params[:slug].present?
       base_62 = params[:slug]
       params[:id] = Base62.to_base_10_from_62(base_62)
     end
-    params.require(:shortlink).permit(:destination, :slug)
+    params.require(:shortlink).permit(:id, :destination, :slug)
   end
 
   def redirect_slug
