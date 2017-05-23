@@ -2,32 +2,15 @@
 
 # Review of Problem Statement
 ## The Web Project - TinyURL Overview
-Produce a "TinyURL" service:
+"TinyURL" service:
   - like bitly or Google url shortener, when I enter a URL I get a "short" URL e.g., https://wizeservices.com/careers ⇒ https://localhost:3000/corto
   - when I browse to a "short" URL, it redirects to the original URL e.g., https://localhost:3000/corto ⇒ https://wizeservices.com/careers
   - when I visit some specific URL, I see a list of the short and long URL pairs in the system
 
 ## Constraints
-- include at least some "minimal" front-end user interface for creating and listing the URLs -- i.e., it cannot be an API-only implementation *Need a web view to enter, recieve and list the urls*
+- include at least some "minimal" front-end user interface for creating and listing the URLs *Need a web view to enter, recieve and list the urls*
 - be able to handle at least 1,000,000 unique "short" URLs *Response: encoding will need to be c characters from a set of size k where k^c > 1,000,000*
-- be in some kind of Source Code Control System you can share with us (e.g., a repo on Github, Jira, etc.;, a copy of your local repo; access to an SVN server, etc.)
-*Using Git*
-- Your implementation may not call any external URL-shortening service. *:)*
-- Beyond that, feel free to use any language, tools, frameworks, online resources, etc. to implement your project. *using ruby and rails for productivity*
-
-## Presentation
-We will ask you to present your design and implementation.
-
-During your presentation, please be prepared to...
-- demonstrate your project
-- discuss your choices (e.g., language, tools, framework, design, etc.) and trade-offs
-- discuss how it should be able to handle concurrent requests
-
-## Future
-- we will present new or changed requirements
-- you will lead a discussion of how to meet them
-- you will have some time to make the changes
-- you will demonstrate and present your revised project.
+- May not call any external URL-shortening service.
 
 # Solution Design
 ## Scope
@@ -61,9 +44,9 @@ We also want to consider QPS requirements. If someone post a link in the New Yor
 ## Data Model
 TinyURLs table
 --------
-str slug
-str destination
-date created_at
+- str slug
+- str destination
+- date created_at
 
 We don't really need an id, since slugs have to be guaranteed to be unique. We will want a primary key constraint on slug. It should both validate uniqueness and be indexed for speedy lookups.
 
